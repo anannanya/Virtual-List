@@ -4,8 +4,9 @@
   align-items: center;
   height: 800px
 }
-.select div{
+.select-child-div{
   margin-bottom: 10px;
+  
 }
 .select input{
   width: 100px;
