@@ -27,6 +27,7 @@ export default memo(function ListItem<IListItemData extends IBaseListItem>(
         onItemClick
     } = props;
 
+
     const style = useMemo(() => (getItemStyle ? getItemStyle(listItem) : nil), [
         listItem,
         getItemStyle
@@ -35,6 +36,7 @@ export default memo(function ListItem<IListItemData extends IBaseListItem>(
     const listDidMMount = useCallback((element: HTMLDivElement | null) => {
         if (element) {
             heightMap.current[listItem.id] = element.offsetHeight;
+            // console.log(heightMap)
         }
         if (isLastItem) {
             update((id) => id + 1);

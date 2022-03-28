@@ -60,14 +60,11 @@ export default function List<IListItemData extends IBaseListItem>(
     const { startIndex, endIndex } = dealData({
         data,
         scrollTop,
-        itemHeight,
+        itemHeight: getItemHeight,
         containerHeight
     });
 
-    const fullListHeight = useMemo(() => getFullListHeight(data, getItemHeight), [
-        data,
-        getItemHeight
-    ]);
+    const fullListHeight = getFullListHeight(data, getItemHeight);
 
     const offsetHeight = useMemo(
         () => getItemOffsetTop(startIndex, data, getItemHeight),
@@ -91,7 +88,7 @@ export default function List<IListItemData extends IBaseListItem>(
     const scrollTo = usePersistFn((item: IListItemData) => {
         const targetIndex = data.findIndex(({ id }) => item.id === id);
         if (targetIndex > -1 && boxContain.current) {
-            let targetScrollTop = getItemOffsetTop(targetIndex, data, itemHeight);
+            let targetScrollTop = getItemOffsetTop(targetIndex, data, getItemHeight);
             targetScrollTop = Math.min(maxScrollTop, targetScrollTop);
             targetScrollTop = Math.max(0, targetScrollTop);
             setScrollTop(targetScrollTop);
@@ -148,24 +145,6 @@ export default function List<IListItemData extends IBaseListItem>(
                         );
                     })}
                 </div>
-                {/* <AntdList
-                    bordered
-                    dataSource={visibleData}
-                    renderItem={(listItem, index) => (
-                        <AntdList.Item>
-                            <ListItem<IListItemData>
-                                renderItem={renderItem}
-                                listItem={listItem}
-                                heightMap={heightMap}
-                                getItemStyle={getItemStyle}
-                                update={setUpdateId}
-                                key={listItem.id}
-                                isLastItem={index === visibleData.length - 1}
-                                onItemClick={onItemClick}
-                            />
-                        </AntdList.Item>
-                    )}
-                /> */}
             </div>
         </ul>
     );

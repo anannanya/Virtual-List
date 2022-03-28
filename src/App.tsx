@@ -69,17 +69,28 @@ function App() {
   }, [isHeightSame])
 
   const listItemStyle = useMemo(() => {
-    return {
-      height: listItemHeight
+    if (isHeightSame) {
+      console.log(1)
+      return {
+        height: listItemHeight,
+        borderBottom: '1px solid grey'
+
+      }
+    } else {
+      console.log(2)
+      return {
+        borderBottom: '1px solid grey'
+      }
     }
-  }, [])
+
+  }, [listItemHeight, isHeightSame])
   const randerItem = useCallback((listItem) => {
     return (
-      <div>
+      <div style={listItemStyle}>
         {`${listItem.title}`}
       </div>
     )
-  }, [])
+  }, [listItemStyle])
 
   return (
     <div className="App">
@@ -107,7 +118,7 @@ function App() {
           renderItem={randerItem}
           containerHeight={500}
           itemHeight={listItemHeight}
-          shouldCollectHeight={true}
+          shouldCollectHeight={!isHeightSame}
         />
       </div>
     </div>
