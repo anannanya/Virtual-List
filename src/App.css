@@ -12,6 +12,7 @@
   width: 100px;
 }
 .list-style{
+  overflow: hidden;
   border: gray solid 1px;
   width: 400px;
   height: 500px;

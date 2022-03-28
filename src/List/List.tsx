@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { usePersistFn } from "ahooks";
+import { List as AntdList } from 'antd'
 
 import "./index.css";
 import dealData from "./utils/deal_data";
@@ -147,6 +148,24 @@ export default function List<IListItemData extends IBaseListItem>(
                         );
                     })}
                 </div>
+                {/* <AntdList
+                    bordered
+                    dataSource={visibleData}
+                    renderItem={(listItem, index) => (
+                        <AntdList.Item>
+                            <ListItem<IListItemData>
+                                renderItem={renderItem}
+                                listItem={listItem}
+                                heightMap={heightMap}
+                                getItemStyle={getItemStyle}
+                                update={setUpdateId}
+                                key={listItem.id}
+                                isLastItem={index === visibleData.length - 1}
+                                onItemClick={onItemClick}
+                            />
+                        </AntdList.Item>
+                    )}
+                /> */}
             </div>
         </ul>
     );

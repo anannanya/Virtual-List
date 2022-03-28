@@ -9,51 +9,88 @@ import { useMemo } from 'react';
 
 function App() {
   const [scrollToKey, setScrollToKey] = useState('')
+  const [updateKey, setUpdateKey] = useState('')
+
   const [scrollToPx, setScrollToPx] = useState('')
-  const [createListNum, setListNum] = useState(null)
+  const [updatePx, setUpdatePx] = useState('')
+
+  const [createListNum, setListNum] = useState('10000')
+  const [updateListNum, setUpdateListNum] = useState('10000')
+
   const [isHeightSame, setSwitch] = useState(true)
-
-  const data = useMemo(() => {
-    createData({
-      dataNum: createListNum,
-      isHeightSame: isHeightSame
-    })
-  }, [createListNum, isHeightSame])
-
-  const listHeightChange = useCallback(() => {
-    setSwitch(!isHeightSame)
-  }, [])
+  const listItemHeight = 50
 
   const sureScrollToKey = useCallback(() => {
+    console.log(scrollToKey)
 
+    setUpdateKey(scrollToKey)
   }, [scrollToKey])
+  const keyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
+      alert('请输入数字')
+    } else {
+      setScrollToKey(e.target.value)
+    }
+  }, [])
 
   const sureScrollToPx = useCallback(() => {
-
+    console.log(scrollToPx)
+    setUpdatePx(scrollToPx)
   }, [scrollToPx])
+  const pxChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
+      alert('请输入数字')
+    } else {
+      setScrollToPx(e.target.value)
+    }
+  }, [])
 
   const sureListNum = useCallback(() => {
-
+    setUpdateListNum(createListNum)
   }, [createListNum])
-
-  const listNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const listNumChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
       alert('请输入数字')
     } else {
       setListNum(e.target.value)
     }
-  }
+  }, [])
+
+  const data = useMemo(() => {
+    return createData({
+      dataNum: createListNum,
+      isHeightSame: isHeightSame
+    })
+  }, [updateListNum, isHeightSame])
+
+  const listHeightChange = useCallback(() => {
+    console.log(isHeightSame)
+    setSwitch(!isHeightSame)
+  }, [isHeightSame])
+
+  const listItemStyle = useMemo(() => {
+    return {
+      height: listItemHeight
+    }
+  }, [])
+  const randerItem = useCallback((listItem) => {
+    return (
+      <div>
+        {`${listItem.title}`}
+      </div>
+    )
+  }, [])
 
   return (
     <div className="App">
       <h1>Stand Virtual List</h1>
-      <div className='select'>
+      <form className='select'>
         <div className='select-child-div'>
-          滚动到指定节点：<Input placeholder='key' value={scrollToKey} onPressEnter={sureScrollToKey} />
+          滚动到指定节点：<Input placeholder='key' value={scrollToKey} onChange={keyChange} onPressEnter={sureScrollToKey} />
           <Button onClick={sureScrollToKey}>确认</Button>
         </div>
         <div className='select-child-div'>
-          滚动到指定像素：<Input placeholder='px' value={scrollToPx} onPressEnter={sureScrollToPx} />
+          滚动到指定像素：<Input placeholder='px' value={scrollToPx} onChange={pxChange} onPressEnter={sureScrollToPx} />
           <Button onClick={sureScrollToPx}>确认</Button>
         </div>
         <div className='select-child-div'>
@@ -63,10 +100,14 @@ function App() {
         <div className='select-child-div'>
           高度是否为一致：<Switch defaultChecked onChange={listHeightChange} />
         </div>
-      </div>
+      </form>
       <div className='list-style'>
         <List
           data={data}
+          renderItem={randerItem}
+          containerHeight={500}
+          itemHeight={listItemHeight}
+          shouldCollectHeight={true}
         />
       </div>
     </div>
