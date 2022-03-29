@@ -39,12 +39,12 @@ function useVisibleData<T>(props: IUseVisibleDataProps<T>) {
             let sum = 0;
             for (let i = 0; i < data.length; i++) {
                 const itemOffsetBottom = sum + itemHeight(data[i], i);
-                if (itemOffsetBottom >= scrollTop && startIndex === -1) {
+                if (itemOffsetBottom > scrollTop && startIndex === -1) {
                     startIndex = i;
                 }
 
                 if (itemOffsetBottom > scrollTop + containerHeight && endIndex === -1) {
-                    console.log(222, i)
+                    // console.log(222, i)
                     endIndex = i;
                     break;
                 }
@@ -58,14 +58,14 @@ function useVisibleData<T>(props: IUseVisibleDataProps<T>) {
             endIndex === -1
                 ? data.length - 1
                 : Math.min(data.length - 1, endIndex + overscan);
-
+        console.log(1234, startIndex)
         return {
             startIndex,
             endIndex
         };
     }, [scrollTop, data, containerHeight, itemHeight, useVirtual, overscan]);
 
-    console.log(888, startIndex, endIndex)
+    // console.log(888, startIndex, endIndex)
     return {
         startIndex,
         endIndex

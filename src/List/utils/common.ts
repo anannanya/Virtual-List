@@ -19,7 +19,9 @@ export const getItemOffsetBottom = <T>(
     }
     return data
         .slice(0, i + 1)
-        .reduce((sum, curItem) => sum + itemHeight(curItem), 0);
+        .reduce((sum, curItem) => {
+            return sum + itemHeight(curItem)
+        }, 0);
 };
 
 export const getItemOffsetTop = <T>(
@@ -27,13 +29,20 @@ export const getItemOffsetTop = <T>(
     data: T[],
     itemHeight: number | ((item: T) => number)
 ) => {
-    return getItemOffsetBottom(i - 1, data, itemHeight);
-};
+    if (typeof itemHeight === 'number') {
+
+        return getItemOffsetBottom(i, data, itemHeight) - itemHeight;
+    } else {
+
+        return getItemOffsetBottom(i, data, itemHeight) - itemHeight(data[i])
+    }
+}
 
 export const getFullListHeight = <T>(
     data: T[],
     itemHeight: number | ((item: T) => number)
 ) => {
+    console.log(2)
     return getItemOffsetBottom(data.length - 1, data, itemHeight);
 };
 

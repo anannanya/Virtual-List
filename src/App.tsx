@@ -23,7 +23,7 @@ function App() {
   const [createListNum, setListNum] = useState('10000')
   const [updateListNum, setUpdateListNum] = useState('10000')
 
-  const [isHeightSame, setSwitch] = useState(true)
+  const [isHeightSame, setSwitch] = useState(false)
 
   const listItemHeight = 50
 
@@ -34,7 +34,7 @@ function App() {
 
   const sureScrollToKey = useCallback(() => {
     setUpdateKey(scrollToKey)
-
+    console.log(111, scrollToKey)
     if (listController.current) {
       listController.current.scrollTo(data[scrollToKey])
     }

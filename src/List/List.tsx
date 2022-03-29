@@ -89,9 +89,11 @@ export default function List<IListItemData extends IBaseListItem>(
     const scrollTo = usePersistFn((item: IListItemData | string) => {
         if (typeof item === 'object') {
             const targetIndex = data.findIndex(({ id }) => item.id === id);
+            // console.log(23344, targetIndex)
             if (targetIndex > -1 && boxContain.current) {
                 let targetScrollTop = getItemOffsetTop(targetIndex, data, getItemHeight);
                 targetScrollTop = dealCritical(targetScrollTop, maxScrollTop);
+                // console.log(23344, targetScrollTop)
                 setScrollTop(targetScrollTop);
                 boxContain.current.scrollTop = targetScrollTop;
             }

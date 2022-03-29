@@ -39,6 +39,9 @@ export default memo(function ListItem<IListItemData extends IBaseListItem>(
             // console.log(heightMap)
         }
         if (isLastItem) {
+        }
+        if (isLastItem && element) {
+            // console.log(98653, element)
             update((id) => id + 1);
         }
     }, []);
