@@ -34,7 +34,6 @@ function App() {
 
   const sureScrollToKey = useCallback(() => {
     setUpdateKey(scrollToKey)
-    console.log(111, scrollToKey)
     if (listController.current) {
       listController.current.scrollTo(data[scrollToKey])
     }

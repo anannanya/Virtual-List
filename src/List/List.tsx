@@ -82,7 +82,8 @@ export default function List<IListItemData extends IBaseListItem>(
 
     const onScroll = usePersistFn(() => {
         if (!boxContain.current) return;
-        const newScrollTop = boxContain.current.scrollTop;
+        const newScrollTop = Math.ceil(boxContain.current.scrollTop);
+        // console.log('gundong', newScrollTop, scrollTop)
         if (newScrollTop !== scrollTop) setScrollTop(boxContain.current.scrollTop);
     });
 
@@ -93,7 +94,7 @@ export default function List<IListItemData extends IBaseListItem>(
             if (targetIndex > -1 && boxContain.current) {
                 let targetScrollTop = getItemOffsetTop(targetIndex, data, getItemHeight);
                 targetScrollTop = dealCritical(targetScrollTop, maxScrollTop);
-                // console.log(23344, targetScrollTop)
+                console.log(23344, targetScrollTop)
                 setScrollTop(targetScrollTop);
                 boxContain.current.scrollTop = targetScrollTop;
             }
