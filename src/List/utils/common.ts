@@ -17,7 +17,6 @@ export const getItemOffsetBottom = <T>(
     if (typeof itemHeight === "number") {
         return (i + 1) * itemHeight;
     }
-    console.log(i)
     return data
         .slice(0, i + 1)
         .reduce((sum, curItem) => sum + itemHeight(curItem), 0);
@@ -37,3 +36,13 @@ export const getFullListHeight = <T>(
 ) => {
     return getItemOffsetBottom(data.length - 1, data, itemHeight);
 };
+
+export const dealCritical = (
+    scrollTop: number,
+    maxScrollTop: number
+) => {
+    let finalScrollTop = scrollTop;
+    finalScrollTop = Math.min(maxScrollTop, finalScrollTop)
+    finalScrollTop = Math.max(0, finalScrollTop)
+    return finalScrollTop;
+}

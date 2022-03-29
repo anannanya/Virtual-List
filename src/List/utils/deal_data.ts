@@ -44,6 +44,7 @@ function useVisibleData<T>(props: IUseVisibleDataProps<T>) {
                 }
 
                 if (itemOffsetBottom > scrollTop + containerHeight && endIndex === -1) {
+                    console.log(222, i)
                     endIndex = i;
                     break;
                 }
@@ -64,6 +65,7 @@ function useVisibleData<T>(props: IUseVisibleDataProps<T>) {
         };
     }, [scrollTop, data, containerHeight, itemHeight, useVirtual, overscan]);
 
+    console.log(888, startIndex, endIndex)
     return {
         startIndex,
         endIndex

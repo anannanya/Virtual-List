@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePersistFn } from "ahooks";
 import { List as AntdList } from 'antd'
 
@@ -6,7 +6,7 @@ import "./index.css";
 import dealData from "./utils/deal_data";
 import ListItem from "./ListItem";
 import { IBaseListItem } from "./type";
-import { getFullListHeight, getItemOffsetTop } from "./utils/common";
+import { getFullListHeight, getItemOffsetTop, dealCritical } from "./utils/common";
 
 export interface ListController<IListItemData> {
     scrollTo: (item: IListItemData) => void;
@@ -42,10 +42,10 @@ export default function List<IListItemData extends IBaseListItem>(
     } = props;
     const boxContain = useRef<HTMLUListElement | null>(null);
     const [scrollTop, setScrollTop] = useState(0);
-    const [, setUpdateId] = useState(0);
+    const [updateId, setUpdateId] = useState(0);
     const heightMap = useRef<{ [key: string]: number }>({});
 
-    const getItemHeight = usePersistFn((item: IListItemData) => {
+    const getItemHeight = useCallback((item: IListItemData) => {
         let actualItemheight;
         if (shouldCollectHeight) {
             actualItemheight = heightMap.current[item.id];
@@ -54,8 +54,9 @@ export default function List<IListItemData extends IBaseListItem>(
             actualItemheight =
                 typeof itemHeight === "function" ? itemHeight(item) : itemHeight;
         }
+        // console.log(333, actualItemheight)
         return actualItemheight;
-    });
+    }, [shouldCollectHeight, updateId]);
 
     const { startIndex, endIndex } = dealData({
         data,
@@ -85,15 +86,22 @@ export default function List<IListItemData extends IBaseListItem>(
         if (newScrollTop !== scrollTop) setScrollTop(boxContain.current.scrollTop);
     });
 
-    const scrollTo = usePersistFn((item: IListItemData) => {
-        const targetIndex = data.findIndex(({ id }) => item.id === id);
-        if (targetIndex > -1 && boxContain.current) {
-            let targetScrollTop = getItemOffsetTop(targetIndex, data, getItemHeight);
-            targetScrollTop = Math.min(maxScrollTop, targetScrollTop);
-            targetScrollTop = Math.max(0, targetScrollTop);
+    const scrollTo = usePersistFn((item: IListItemData | string) => {
+        if (typeof item === 'object') {
+            const targetIndex = data.findIndex(({ id }) => item.id === id);
+            if (targetIndex > -1 && boxContain.current) {
+                let targetScrollTop = getItemOffsetTop(targetIndex, data, getItemHeight);
+                targetScrollTop = dealCritical(targetScrollTop, maxScrollTop);
+                setScrollTop(targetScrollTop);
+                boxContain.current.scrollTop = targetScrollTop;
+            }
+        } else {
+            let targetScrollTop = Number(item);
+            targetScrollTop = dealCritical(targetScrollTop, maxScrollTop)
             setScrollTop(targetScrollTop);
             boxContain.current.scrollTop = targetScrollTop;
         }
+
     });
 
     useEffect(() => {

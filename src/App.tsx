@@ -5,6 +5,12 @@ import { Input, Switch, Button } from 'antd';
 import createData from './createData'
 import List from './List'
 import { useMemo } from 'react';
+import { ListController } from './List/List'
+
+interface IDataItem {
+  id: string,
+  title: string
+}
 
 
 function App() {
@@ -18,39 +24,51 @@ function App() {
   const [updateListNum, setUpdateListNum] = useState('10000')
 
   const [isHeightSame, setSwitch] = useState(true)
+
   const listItemHeight = 50
 
-  const sureScrollToKey = useCallback(() => {
-    console.log(scrollToKey)
+  const listController = useRef<ListController<IDataItem | string>>(null)
+  const getController = (props: ListController<IDataItem>) => {
+    listController.current = props
+  }
 
+  const sureScrollToKey = useCallback(() => {
     setUpdateKey(scrollToKey)
+
+    if (listController.current) {
+      listController.current.scrollTo(data[scrollToKey])
+    }
   }, [scrollToKey])
   const keyChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
-      alert('请输入数字')
+    if (isNaN(Number(e.target.value))) {
+      alert('请输入大于0的数字')
     } else {
       setScrollToKey(e.target.value)
     }
   }, [])
 
   const sureScrollToPx = useCallback(() => {
-    console.log(scrollToPx)
     setUpdatePx(scrollToPx)
+    if (listController.current) {
+      listController.current.scrollTo(scrollToPx)
+    }
   }, [scrollToPx])
   const pxChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
-      alert('请输入数字')
+    if (isNaN(Number(e.target.value))) {
+      alert('请输入大于0的数字')
     } else {
       setScrollToPx(e.target.value)
     }
   }, [])
 
+
+
   const sureListNum = useCallback(() => {
     setUpdateListNum(createListNum)
   }, [createListNum])
   const listNumChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isNaN(Number(e.target.value)) || e.target.value.trim() === '') {
-      alert('请输入数字')
+    if (isNaN(Number(e.target.value))) {
+      alert('请输入大于0的数字')
     } else {
       setListNum(e.target.value)
     }
@@ -64,20 +82,17 @@ function App() {
   }, [updateListNum, isHeightSame])
 
   const listHeightChange = useCallback(() => {
-    console.log(isHeightSame)
     setSwitch(!isHeightSame)
   }, [isHeightSame])
 
   const listItemStyle = useMemo(() => {
     if (isHeightSame) {
-      console.log(1)
       return {
         height: listItemHeight,
         borderBottom: '1px solid grey'
 
       }
     } else {
-      console.log(2)
       return {
         borderBottom: '1px solid grey'
       }
@@ -109,7 +124,7 @@ function App() {
           <Button onClick={sureListNum}>确认</Button>
         </div>
         <div className='select-child-div'>
-          高度是否为一致：<Switch defaultChecked onChange={listHeightChange} />
+          高度是否为一致：<Switch checked={isHeightSame} onChange={listHeightChange} />
         </div>
       </form>
       <div className='list-style'>
@@ -119,6 +134,7 @@ function App() {
           containerHeight={500}
           itemHeight={listItemHeight}
           shouldCollectHeight={!isHeightSame}
+          getController={getController}
         />
       </div>
     </div>
